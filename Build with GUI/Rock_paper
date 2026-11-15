@@ -1,0 +1,101 @@
+
+
+import tkinter as tk
+import random
+
+# Create the main window
+window = tk.Tk()
+window.title("Rock Paper Scissors Game")
+window.geometry("400x400")
+window.configure(bg="lightblue")
+
+# Game function
+def play_game(player_choice):
+
+    # Computer makes a random choice
+    choices = ["Rock", "Paper", "Scissors"]
+    computer_choice = random.choice(choices)
+
+    # Display choices
+    player_label.config(text="Player: " + player_choice)
+    computer_label.config(text="Computer: " + computer_choice)
+
+    # Check the winner
+    if player_choice == computer_choice:
+        result = "It's a Tie!"
+
+    elif player_choice == "Paper" and computer_choice == "Rock":
+        result = "Player Wins!"
+
+    elif player_choice == "Rock" and computer_choice == "Scissors":
+        result = "Player Wins!"
+
+    elif player_choice == "Scissors" and computer_choice == "Paper":
+        result = "Player Wins!"
+
+    else:
+        result = "Computer Wins!"
+
+    # Display the result
+    result_label.config(text=result)
+
+
+# Heading
+title_label = tk.Label(
+    window,
+    text="Rock Paper Scissors",
+    font=("Arial", 18, "bold"),
+    bg="lightblue"
+)
+title_label.pack(pady=20)
+
+# Instructions
+instruction = tk.Label(
+    window,
+    text="Choose your option:",
+    font=("Arial", 12),
+    bg="lightblue"
+)
+instruction.pack()
+
+# Player buttons
+rock_button = tk.Button(
+    window, text="Rock",
+    width=12, command=lambda: play_game("Rock")
+)
+rock_button.pack(pady=5)
+
+paper_button = tk.Button(
+    window, text="Paper",
+    width=12, command=lambda: play_game("Paper")
+)
+paper_button.pack(pady=5)
+
+scissors_button = tk.Button(
+    window, text="Scissors",
+    width=12, command=lambda: play_game("Scissors")
+)
+scissors_button.pack(pady=5)
+
+# Display player and computer choices
+player_label = tk.Label(
+    window, text="Player: ",
+    font=("Arial", 12), bg="lightblue"
+)
+player_label.pack(pady=5)
+
+computer_label = tk.Label(
+    window, text="Computer: ",
+    font=("Arial", 12), bg="lightblue"
+)
+computer_label.pack(pady=5)
+
+# Display winner
+result_label = tk.Label(
+    window, text="Result will appear here",
+    font=("Arial", 14, "bold"), bg="lightblue"
+)
+result_label.pack(pady=15)
+
+# Run the application
+window.mainloop()
