@@ -1,0 +1,214 @@
+
+
+import tkinter as tk
+from tkinter import messagebox
+
+# Dictionary to store contacts
+contacts = {}
+
+# Create main window
+root = tk.Tk()
+root.title("My Address Book")
+root.geometry("500x550")
+root.configure(bg="lightblue")
+
+# Heading
+title = tk.Label(
+    root,
+    text="MY ADDRESS BOOK",
+    font=("Arial", 22, "bold"),
+    bg="lightblue",
+    fg="darkblue"
+)
+title.pack(pady=15)
+
+# Name label
+name_label = tk.Label(
+    root,
+    text="Enter Name:",
+    font=("Arial", 12),
+    bg="lightblue"
+)
+name_label.pack()
+
+# Name entry box
+name_entry = tk.Entry(root, font=("Arial", 12), width=30)
+name_entry.pack(pady=5)
+
+# Phone label
+phone_label = tk.Label(
+    root,
+    text="Enter Phone Number:",
+    font=("Arial", 12),
+    bg="lightblue"
+)
+phone_label.pack()
+
+# Phone entry box
+phone_entry = tk.Entry(root, font=("Arial", 12), width=30)
+phone_entry.pack(pady=5)
+
+# Listbox label
+list_label = tk.Label(
+    root,
+    text="Contact List",
+    font=("Arial", 14, "bold"),
+    bg="lightblue"
+)
+list_label.pack(pady=10)
+
+# Create Listbox
+contact_list = tk.Listbox(
+    root,
+    font=("Arial", 12),
+    width=35,
+    height=10
+)
+contact_list.pack(pady=5)
+
+
+# Function to add contact
+def add_contact():
+
+    name = name_entry.get().strip()
+    phone = phone_entry.get().strip()
+
+    if name == "" or phone == "":
+        messagebox.showwarning(
+            "Warning",
+            "Please enter name and phone number!"
+        )
+
+    elif name in contacts:
+        messagebox.showwarning(
+            "Warning",
+            "Contact already exists!"
+        )
+
+    else:
+        contacts[name] = phone
+
+        contact_list.insert(tk.END, name)
+
+        messagebox.showinfo(
+            "Success",
+            "Contact added successfully!"
+        )
+
+        name_entry.delete(0, tk.END)
+        phone_entry.delete(0, tk.END)
+
+
+# Function to delete contact
+def delete_contact():
+
+    selected = contact_list.curselection()
+
+    if selected:
+        name = contact_list.get(selected[0])
+
+        del contacts[name]
+
+        contact_list.delete(selected[0])
+
+        messagebox.showinfo(
+            "Deleted",
+            "Contact deleted successfully!"
+        )
+    else:
+        messagebox.showwarning(
+            "Warning",
+            "Please select a contact to delete!"
+        )
+
+
+# Function to search contact
+def search_contact():
+
+    name = name_entry.get().strip()
+
+    if name in contacts:
+        messagebox.showinfo(
+            "Contact Found",
+            "Name: " + name +
+            "\nPhone: " + contacts[name]
+        )
+    else:
+        messagebox.showerror(
+            "Not Found",
+            "Contact does not exist!"
+        )
+
+
+# Function to display contact details
+def show_contact(event):
+
+    selected = contact_list.curselection()
+
+    if selected:
+        name = contact_list.get(selected[0])
+        phone = contacts[name]
+
+        name_entry.delete(0, tk.END)
+        phone_entry.delete(0, tk.END)
+
+        name_entry.insert(0, name)
+        phone_entry.insert(0, phone)
+
+
+# Function to clear fields
+def clear_fields():
+
+    name_entry.delete(0, tk.END)
+    phone_entry.delete(0, tk.END)
+
+
+# Buttons
+add_button = tk.Button(
+    root,
+    text="Add Contact",
+    width=15,
+    bg="green",
+    fg="white",
+    font=("Arial", 11, "bold"),
+    command=add_contact
+)
+add_button.pack(pady=5)
+
+search_button = tk.Button(
+    root,
+    text="Search Contact",
+    width=15,
+    bg="blue",
+    fg="white",
+    font=("Arial", 11, "bold"),
+    command=search_contact
+)
+search_button.pack(pady=5)
+
+delete_button = tk.Button(
+    root,
+    text="Delete Contact",
+    width=15,
+    bg="red",
+    fg="white",
+    font=("Arial", 11, "bold"),
+    command=delete_contact
+)
+delete_button.pack(pady=5)
+
+clear_button = tk.Button(
+    root,
+    text="Clear Fields",
+    width=15,
+    font=("Arial", 11, "bold"),
+    command=clear_fields
+)
+clear_button.pack(pady=5)
+
+
+# Event Binding
+contact_list.bind("<<ListboxSelect>>", show_contact)
+
+# Run application
+root.mainloop()
