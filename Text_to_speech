@@ -1,0 +1,169 @@
+
+
+import tkinter as tk
+from tkinter import messagebox
+from gtts import gTTS
+import os
+
+# Create main window
+root = tk.Tk()
+root.title("Text To Speech Converter")
+root.geometry("550x550")
+root.configure(bg="lightblue")
+
+# Heading
+title = tk.Label(
+    root,
+    text="TEXT TO SPEECH CONVERTER",
+    font=("Arial", 20, "bold"),
+    bg="lightblue",
+    fg="darkblue"
+)
+title.pack(pady=20)
+
+# Instruction label
+label = tk.Label(
+    root,
+    text="Enter your text below:",
+    font=("Arial", 13),
+    bg="lightblue"
+)
+label.pack()
+
+# Text box
+text_box = tk.Text(
+    root,
+    height=8,
+    width=45,
+    font=("Arial", 12)
+)
+text_box.pack(pady=15)
+
+
+# Language selection
+language_label = tk.Label(
+    root,
+    text="Select Language:",
+    font=("Arial", 12),
+    bg="lightblue"
+)
+language_label.pack()
+
+language = tk.StringVar()
+language.set("English")
+
+language_menu = tk.OptionMenu(
+    root,
+    language,
+    "English",
+    "Hindi",
+    "Marathi",
+    "French",
+    "Spanish"
+)
+language_menu.pack(pady=10)
+
+
+# Convert text into speech
+def convert_speech():
+
+    text = text_box.get("1.0", tk.END).strip()
+
+    if text == "":
+        messagebox.showwarning(
+            "Warning",
+            "Please enter some text!"
+        )
+        return
+
+    # Language codes
+    languages = {
+        "English": "en",
+        "Hindi": "hi",
+        "Marathi": "mr",
+        "French": "fr",
+        "Spanish": "es"
+    }
+
+    try:
+        # Convert text into speech
+        speech = gTTS(
+            text=text,
+            lang=languages[language.get()]
+        )
+
+        # Save audio file
+        speech.save("speech.mp3")
+
+        messagebox.showinfo(
+            "Success",
+            "Speech converted successfully!"
+        )
+
+    except Exception as e:
+        messagebox.showerror(
+            "Error",
+            "Unable to convert speech.\n" + str(e)
+        )
+
+
+# Play audio
+def play_audio():
+
+    if os.path.exists("speech.mp3"):
+
+        os.startfile("speech.mp3")
+
+    else:
+        messagebox.showwarning(
+            "Warning",
+            "Please convert the text first!"
+        )
+
+
+# Clear text
+def clear_text():
+
+    text_box.delete("1.0", tk.END)
+
+
+# Convert button
+convert_button = tk.Button(
+    root,
+    text="Convert to Speech",
+    font=("Arial", 12, "bold"),
+    bg="green",
+    fg="white",
+    width=20,
+    command=convert_speech
+)
+convert_button.pack(pady=10)
+
+
+# Play button
+play_button = tk.Button(
+    root,
+    text="Play Audio",
+    font=("Arial", 12, "bold"),
+    bg="blue",
+    fg="white",
+    width=20,
+    command=play_audio
+)
+play_button.pack(pady=5)
+
+
+# Clear button
+clear_button = tk.Button(
+    root,
+    text="Clear Text",
+    font=("Arial", 12, "bold"),
+    bg="orange",
+    width=20,
+    command=clear_text
+)
+clear_button.pack(pady=5)
+
+
+# Run application
+root.mainloop()
