@@ -1,0 +1,175 @@
+
+
+import tkinter as tk
+from functools import partial
+import copy
+
+# Create main window
+root = tk.Tk()
+root.title("Two Player Tic Tac Toe")
+root.geometry("450x550")
+root.configure(bg="lightyellow")
+
+# 2D list to store game data
+board = [
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""]
+]
+
+# Deep copy of the board
+saved_board = copy.deepcopy(board)
+
+player = "X"
+game_over = False
+
+# Display current player
+status = tk.Label(
+    root,
+    text="Player X's Turn",
+    font=("Arial", 20, "bold"),
+    bg="lightyellow"
+)
+status.pack(pady=20)
+
+# Frame for game buttons
+frame = tk.Frame(root, bg="lightyellow")
+frame.pack()
+
+# List to store buttons
+buttons = []
+
+
+# Check winner
+def check_winner():
+
+    for i in range(3):
+
+        if board[i][0] == board[i][1] == board[i][2] != "":
+            return board[i][0]
+
+        if board[0][i] == board[1][i] == board[2][i] != "":
+            return board[0][i]
+
+    if board[0][0] == board[1][1] == board[2][2] != "":
+        return board[0][0]
+
+    if board[0][2] == board[1][1] == board[2][0] != "":
+        return board[0][2]
+
+    return None
+
+
+# Handle player move
+def make_move(row, col):
+
+    global player, game_over
+
+    if game_over:
+        return
+
+    if board[row][col] == "":
+
+        # Store move in 2D list
+        board[row][col] = player
+
+        # Display X or O
+        if player == "X":
+            color = "blue"
+        else:
+            color = "red"
+
+        buttons[row][col].config(
+            text=player,
+            fg=color,
+            state="disabled"
+        )
+
+        # Check winner
+        winner = check_winner()
+
+        if winner:
+            status.config(text="Player " + winner + " Wins!")
+            game_over = True
+
+        elif all(board[r][c] != ""
+                 for r in range(3)
+                 for c in range(3)):
+
+            status.config(text="It's a Draw!")
+            game_over = True
+
+        else:
+            if player == "X":
+                player = "O"
+            else:
+                player = "X"
+
+            status.config(text="Player " + player + "'s Turn")
+
+
+# Create 3 x 3 buttons
+for row in range(3):
+
+    button_row = []
+
+    for col in range(3):
+
+        btn = tk.Button(
+            frame,
+            text="",
+            font=("Arial", 30, "bold"),
+            width=5,
+            height=2,
+            bg="white",
+            command=partial(make_move, row, col)
+        )
+
+        btn.grid(row=row, column=col, padx=5, pady=5)
+
+        button_row.append(btn)
+
+    buttons.append(button_row)
+
+
+# Restart game
+def restart_game():
+
+    global board, player, game_over
+
+    board = [
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""]
+    ]
+
+    saved_board = copy.deepcopy(board)
+
+    player = "X"
+    game_over = False
+
+    status.config(text="Player X's Turn")
+
+    for row in range(3):
+        for col in range(3):
+
+            buttons[row][col].config(
+                text="",
+                state="normal",
+                fg="black"
+            )
+
+
+# Restart button
+restart_button = tk.Button(
+    root,
+    text="Restart Game",
+    font=("Arial", 15, "bold"),
+    bg="lightgreen",
+    command=restart_game
+)
+
+restart_button.pack(pady=25)
+
+# Run application
+root.mainloop()
